@@ -23,7 +23,7 @@ import java.util.List;
 public class PatientController {
     private PatientRepository patientRepository;
 
-    @GetMapping(path = "/index")
+    @GetMapping(path = "/user/index")
     public  String patients(Model model,
                             @RequestParam(name = "page", defaultValue = "0") int page,
                             @RequestParam(name = "size", defaultValue = "8") int size,
@@ -37,32 +37,31 @@ public class PatientController {
     }
 
 
-    @GetMapping("/delete")
+    @GetMapping("/admin/delete")
     public String Delete(Long id, String keyword, int page){
         patientRepository.deleteById(id);
-        return "redirect:/index?page="+page+"&Keyword"+keyword;
+        return "redirect:/user/index?page="+page+"&Keyword"+keyword;
     }
 
     @GetMapping("/")
     public String Home(){
-
-        return "redirect:/index";
+        return "home";
     }
 
-    @GetMapping("/patients")
+    @GetMapping("/user/patients")
     @ResponseBody
     public List<Patient> listPatient(){
         return patientRepository.findAll();
     }
 
-    @GetMapping("/formPatients")
+    @GetMapping("/admin/formPatients")
     public String formPatients(Model model){
         model.addAttribute("patient",new Patient());
         return "formPatients";
     }
 
 
-    @PostMapping(path = "/save")
+    @PostMapping(path = "/admin/save")
     public String save(Model model, @Valid Patient patient, BindingResult bindingResult,
                        @RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "") String Keyword){
@@ -71,7 +70,7 @@ public class PatientController {
               return "redirect:/index?page"+page+"&keyword="+Keyword;
     }
 
-    @GetMapping("/editPatients")
+    @GetMapping("/admin/editPatients")
     public String editPatients(Model model, Long id, String keyword, int page){
         Patient patient=patientRepository.findById(id).orElse(null);
         if(patient==null) throw new RuntimeException("Patient Introuvable");
